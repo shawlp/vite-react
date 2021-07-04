@@ -1,0 +1,35 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": ["plugin:react/recommended", "airbnb"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["react", "@typescript-eslint"],
+  "settings": {
+    "react": {
+      "version": "detect" // 表示探测当前 node_modules 安装的 react 版本
+    }
+  },
+  "rules": {
+    "no-use-before-define": "off",
+    "import/no-unresolved": "off",
+    "import/extensions": "off",
+    "react/jsx-filename-extension": ["error", { "extensions": [".jsx", ".tsx"] }],
+    "semi": "off",
+    "comma-dangle": "off",
+    "arrow-body-style": "off",
+    "no-undef": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/destructuring-assignment": "off",
+    "react/prop-types": "off"
+  }
+}
