@@ -21,7 +21,8 @@ export default defineConfig({
         'Edge >= 15',
         '> 1%',
         'not IE 11'
-      ]
+      ],
+      additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     }),
     vitePluginHtml({
       minify: true,
