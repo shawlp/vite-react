@@ -74,3 +74,6 @@ vite2 + TypeScript + React
 ├── tsconfig.json
 ├── vite.config.ts
 ```
+
+## 注意事项
+* 若文件不会被源码引用（例如 robots.txt），必须保持原有文件名（没有经过 hash）或者你压根不想引入该资源，只是想得到其 URL。放入到public目录中，在代码中使用相对路径（如/img.png）引入就好

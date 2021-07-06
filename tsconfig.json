@@ -21,6 +21,7 @@
     "emitDecoratorMetadata": true,
     "jsx": "react",
     "typeRoots": ["./node_modules/@types/", "./src/@types/**"],
+    "types": ["vite/client", "node", "jest"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]

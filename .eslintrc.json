@@ -1,15 +1,17 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    // "es2021": true
+    "es6": true
   },
-  "extends": ["plugin:react/recommended", "airbnb"],
+  "extends": ["plugin:react/recommended", "airbnb", "plugin:prettier/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
     },
-    "ecmaVersion": 12,
+    // "ecmaVersion": 12,
+    "ecmaVersion": 6,
     "sourceType": "module"
   },
   "plugins": ["react", "@typescript-eslint"],
@@ -30,6 +32,7 @@
     "react/jsx-props-no-spreading": "off",
     "react/jsx-one-expression-per-line": "off",
     "react/destructuring-assignment": "off",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "import/no-extraneous-dependencies": "off"
   }
 }
