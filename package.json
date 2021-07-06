@@ -4,7 +4,7 @@
   "license": "ISC",
   "scripts": {
     "dev": "cross-env NODE_ENV=development vite",
-    "build": "tsc && vite build",
+    "build": "rm -rf dist && tsc && vite build",
     "serve": "vite preview",
     "lint:tsx": "eslint --ext .tsx src && eslint --ext .ts src",
     "lint:css": "stylelint --aei .less .css src",

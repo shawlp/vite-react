@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
+import { defineConfig, ConfigEnv, UserConfigExport } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import legacy from '@vitejs/plugin-legacy'
-import vitePluginHtml from 'vite-plugin-html'
+import vitePluginHtml, { minifyHtml } from 'vite-plugin-html'
 import reactJsx from 'vite-react-jsx'
 import viteESLint from '@ehutch79/vite-eslint'
 import { cjs2esmVitePlugin } from 'cjs2esmodule'
@@ -11,24 +11,7 @@ import visualizer from 'rollup-plugin-visualizer'
 import path from 'path'
 import fs from 'fs'
 
-try {
-  // 根据环境变量加载环境变量文件
-  const file = dotenv.parse(fs.readFileSync(`./env/.env.${process.env.NODE_ENV}`), {
-    debug: true
-  })
-  // 根据获取的 key 给对应的环境变量赋值
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [key, value] of Object.entries(file)) {
-    process.env[key] = value
-  }
-} catch (e) {
-  // eslint-disable-next-line no-console
-  console.error(e)
-}
-
-const { API_LOCATION, VITE_API_HOST } = process.env
-
-export default defineConfig({
+const config: UserConfigExport = {
   plugins: [
     reactRefresh(),
     legacy({
@@ -46,7 +29,6 @@ export default defineConfig({
       additionalLegacyPolyfills: ['regenerator-runtime/runtime']
     }),
     vitePluginHtml({
-      minify: true,
       inject: {
         injectData: {
           title: 'vite-react'
@@ -115,26 +97,82 @@ export default defineConfig({
     manifest: false,
     outDir: 'dist',
     rollupOptions: {
+      // plugins: [
+      //   visualizer({
+      //     open: true,
+      //     gzipSize: true,
+      //     brotliSize: true
+      //   })
+      // ],
+      external: 'react/jsx-runtime'
+    }
+  }
+}
+
+/** 根据命令行设置process.env */
+function setEnv() {
+  try {
+    // 根据环境变量加载环境变量文件
+    const file = dotenv.parse(fs.readFileSync(`./env/.env.${process.env.NODE_ENV}`), {
+      debug: true
+    })
+    // 根据获取的 key 给对应的环境变量赋值
+    // eslint-disable-next-line no-restricted-syntax
+    for (const [key, value] of Object.entries(file)) {
+      process.env[key] = value
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e)
+  }
+}
+
+export default ({ command, mode }: ConfigEnv) => {
+  console.log('mode:', mode, ' command:', command)
+  setEnv()
+  const {
+    plugins = [],
+    build: { rollupOptions }
+  } = config
+  const { API_LOCATION, VITE_API_HOST, VISUALIZER } = process.env
+  console.log('VISUALIZER', VISUALIZER)
+
+  const isBuild = command === 'build'
+
+  if (isBuild) {
+    config.plugins = [...plugins, minifyHtml()]
+    config.define = {
+      'process.env.NODE_ENV': 'production'
+    }
+  }
+
+  if (VISUALIZER) {
+    config.build.rollupOptions = {
+      ...rollupOptions,
       plugins: [
         visualizer({
           open: true,
           gzipSize: true,
           brotliSize: true
         })
-      ],
-      external: 'react/jsx-runtime'
+      ]
     }
-  },
-  server: {
-    host: '127.0.0.1',
-    open: true,
-    port: 8888,
-    proxy: {
-      [API_LOCATION]: {
-        target: VITE_API_HOST,
-        changeOrigin: true,
-        rewrite: (pathName) => pathName.replace(API_LOCATION, '')
+  }
+
+  if (command === 'serve') {
+    config.server = {
+      host: '127.0.0.1',
+      open: true,
+      port: 8888,
+      proxy: {
+        [API_LOCATION]: {
+          target: VITE_API_HOST,
+          changeOrigin: true,
+          rewrite: (pathName) => pathName.replace(API_LOCATION, '')
+        }
       }
     }
   }
-})
+
+  return config
+}
