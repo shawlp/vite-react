@@ -1,4 +1,4 @@
-import { defineConfig, ConfigEnv, UserConfigExport } from 'vite'
+import { ConfigEnv, UserConfigExport } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import legacy from '@vitejs/plugin-legacy'
 import vitePluginHtml, { minifyHtml } from 'vite-plugin-html'
@@ -6,6 +6,7 @@ import reactJsx from 'vite-react-jsx'
 import viteESLint from '@ehutch79/vite-eslint'
 import { cjs2esmVitePlugin } from 'cjs2esmodule'
 // import vitePluginImp from 'vite-plugin-imp'
+import { viteMockServe } from 'vite-plugin-mock'
 import dotenv from 'dotenv'
 import visualizer from 'rollup-plugin-visualizer'
 import path from 'path'
@@ -127,15 +128,13 @@ function setEnv() {
   }
 }
 
-export default ({ command, mode }: ConfigEnv) => {
-  console.log('mode:', mode, ' command:', command)
+export default ({ command }: ConfigEnv) => {
   setEnv()
   const {
     plugins = [],
     build: { rollupOptions }
   } = config
   const { API_LOCATION, VITE_API_HOST, VISUALIZER } = process.env
-  console.log('VISUALIZER', VISUALIZER)
 
   const isBuild = command === 'build'
 
@@ -160,6 +159,7 @@ export default ({ command, mode }: ConfigEnv) => {
   }
 
   if (command === 'serve') {
+    config.plugins = [...plugins, viteMockServe({ supportTs: true })]
     config.server = {
       host: '127.0.0.1',
       open: true,

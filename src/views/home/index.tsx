@@ -22,6 +22,10 @@ const Home: React.FC = () => {
       .then((response) => response.json())
       // eslint-disable-next-line no-console
       .then((json) => console.log(json))
+    fetch('/mock/api/getUser')
+      .then((response) => response.json())
+      // eslint-disable-next-line no-console
+      .then((json) => console.log(json))
   }, [])
   return (
     <div className={styles.home}>
