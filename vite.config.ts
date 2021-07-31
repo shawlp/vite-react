@@ -52,7 +52,7 @@ const config: UserConfigExport = {
     // })
   ],
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.mjs'],
     alias: [
       {
         find: /@\//,
